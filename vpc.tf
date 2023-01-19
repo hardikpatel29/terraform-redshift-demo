@@ -99,7 +99,7 @@ resource "aws_redshift_subnet_group" "redshift_subnet_group" {
 
 
   tags = {
-    environment = "dev"
+    environment = var.environment
     Name = "redshift-subnet-group"
   }
 }
