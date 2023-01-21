@@ -26,6 +26,11 @@ resource "aws_internet_gateway" "my_igw" {
     Name        = "myGW"
   }
 }
+
+resource "aws_eip" "myeip" {
+  vpc      = true
+}
+
 resource "aws_subnet" "my_public" {
 
   count                   = length(slice(local.az_names, 0, 2))

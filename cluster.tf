@@ -8,6 +8,9 @@ resource "aws_redshift_cluster" "mycluster" {
   cluster_subnet_group_name = aws_redshift_subnet_group.redshift_subnet_group.id
   cluster_parameter_group_name = aws_redshift_parameter_group.MyRSParameter.id
   skip_final_snapshot = true
+  publicly_accessible = true
+  elastic_ip          = aws_eip.myeip.public_ip
+  vpc_security_group_ids = [ aws_security_group.redshift_sg.id ]
   
   logging {
     enable        = false
@@ -29,16 +32,21 @@ resource "aws_redshift_cluster_iam_roles" "redshift-access" {
 }
 
 resource "aws_redshift_parameter_group" "MyRSParameter" {
-  name   = "parameter-group-test-terraform"
+  name   = "redshift-terraform"
   family = "redshift-1.0"
 
-  parameter {
-    name  = "require_ssl"
-    value = "true"
-  }
+  # parameter {
+  #   name  = "require_ssl"
+  #   value = "true"
+  # }
 
   parameter {
     name  = "enable_user_activity_logging"
     value = "true"
+  }
+
+  parameter {
+    name = "search_path"
+    value = "$user, public, ${var.database_name}"
   }
 }
